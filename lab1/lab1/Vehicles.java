@@ -14,14 +14,13 @@ public abstract class Vehicles {
      */
     protected int nrDoors; // Number of doors on the car
     protected double enginePower; // Engine power of the car
-    protected boolean engineRunning = false;
     protected double currentSpeed; // The current speed of the car
     protected Color color; // Color of the car
     protected String modelName; // The car model name
     protected double xCoord; // x-koordinaterna på bilen
     protected double yCoord; // y-koordinaterna på bilen
     public String[] positions = {"North", "East", "South", "West"};
-    protected int currentPos = 0;
+    public int currentPos = 0;
 
     /* Public på alla metoder då de skall ärvas (protected hade funkat då med) men om vi har en klass som inte ärver
         från Vehicles vill vi fortfarande kunna kalla på dessa metoder.
@@ -33,12 +32,6 @@ public abstract class Vehicles {
             }
         } return positions[currentPos];
     }
-
-    public void setPosition(double x, double y) {
-        this.xCoord = x;
-        this.yCoord = y;
-    }
-
 
     public int getNrDoors(){
         return nrDoors;
@@ -64,24 +57,15 @@ public abstract class Vehicles {
         return modelName;
     }
 
-    public String toString() {
-        return modelName;
-    }
-
     /* Protected på start- och stopEngine då vi skall inte kunna starta bilarna om de inte
         själva klassen som vill starta dem.
     */
     protected void startEngine(){
-        engineRunning = true;
+        currentSpeed = 0.1;
     }
 
     protected void stopEngine(){
-        engineRunning = false;
         currentSpeed = 0;
-    }
-
-    protected boolean getEngineRunning() {
-        return engineRunning;
     }
 
     public double getYCoord() {
@@ -99,60 +83,10 @@ public abstract class Vehicles {
      */
     protected abstract double speedFactor();
 
-    public void move() {
-        double coordInc = (currentSpeed/10);
+    /*  Public på dessa med då om vi vill ändra hastighet skall det komma från subklassen själv och inget annat.
+        Te.x om vi lägger till fåglar skall inte ett fågelobjekt kunna sänga och höja hastigheten av en bil.
+    */
 
-        if(positions[currentPos].equals("North")) {
-            yCoord += coordInc;
-        }
-        if(positions[currentPos].equals("East")) {
-            xCoord += coordInc;
-        }
-        if(positions[currentPos].equals("South")) {
-            yCoord -= coordInc;
-        }
-        if(positions[currentPos].equals("West")) {
-            xCoord -= coordInc;
-        }
-    }
-
-    /* Gasmetod som ser till att endast ta värden mellan 0 till 1. Och uppdaterar sedan koordinater då vi höjer
-     *  hastigheten.
-     */
-    public void gas(double amount) {
-        if(amount < 0.00 || amount > 1.00) {
-            throw new IllegalArgumentException("Värdet måste vara mellan 0.00 -> 1.00");
-        }
-        incrementSpeed(amount);
-        move();
-    }
-
-    /* Bromsmetod som bromsar bilen sedan uppdaterar koordinaterna.
-     */
-    public void brake(double amount) {
-        if(amount < 0.00 || amount > 1.00) {
-            throw new IllegalArgumentException("Värdet måste vara mellan 0.00 -> 1.00");
-        }
-        decrementSpeed(amount);
-        move();
-    }
-
-    /* Svänger enligt väderstrecken vi har.
-     */
-    public void turnRight() {
-        currentPos = (currentPos + 1) % 4;
-    }
-
-    public void turnLeft() {
-        currentPos = (currentPos - 1);
-        if(Math.signum(currentPos) == -1) {
-            currentPos = 3;
-        }
-    }
-
-    public void direction() {
-        System.out.println(positions[currentPos]);
-    }
 
     protected void incrementSpeed(double amount){
         currentSpeed = Math.min(getCurrentSpeed() + speedFactor() * amount, enginePower);

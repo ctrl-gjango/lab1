@@ -1,12 +1,10 @@
 import org.junit.Test;
 import java.awt.*;
+
 import static org.junit.Assert.*;
 
 public class Saab95Test {
     Vehicles saab = new Saab95();
-
-    /* Testar om alla värden instansieras rätt
-     */
     @Test
     public void startingValues() {
         assertEquals(2, saab.getNrDoors());
@@ -15,8 +13,6 @@ public class Saab95Test {
         assertEquals("Saab95", saab.getModelName());
     }
 
-    /* Aktiverar turbo på saab och testar ifall den aktiveras som den skall
-     */
      @Test
      public void turboTest() {
         Saab95 saab95 = new Saab95();
@@ -27,8 +23,6 @@ public class Saab95Test {
         assertFalse(saab95.getTurboStatus());
      }
 
-    /* Testar ifall motorn startas
-     */
     @Test
     public void engineTest() {
         saab.startEngine();
@@ -38,8 +32,6 @@ public class Saab95Test {
         assertEquals(0, saab.getCurrentSpeed(), 0.1);
     }
 
-    /* Testar om bilen rör på sig och uppdaterar x och y koordinater.
-     */
     @Test
     public void moveTest() {
         Saab95 saab = new Saab95();
