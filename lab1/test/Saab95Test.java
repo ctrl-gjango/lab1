@@ -1,6 +1,11 @@
 import org.junit.Test;
+
 import java.awt.*;
+
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 
 public class Saab95Test {
     Vehicles saab = new Saab95();
@@ -32,10 +37,11 @@ public class Saab95Test {
     @Test
     public void engineTest() {
         saab.startEngine();
-        assertTrue(saab.getCurrentSpeed() > 0);
+        assertTrue(saab.getEngineRunning());
 
         saab.stopEngine();
         assertEquals(0, saab.getCurrentSpeed(), 0.1);
+        assertFalse(saab.getEngineRunning());
     }
 
     /* Testar om bilen rör på sig och uppdaterar x och y koordinater.
@@ -46,10 +52,10 @@ public class Saab95Test {
         double xBefore = saab.getXCoord();
         double yBefore = saab.getYCoord();
         saab.startEngine();
-        saab.move();
+        saab.gas(1);
         assertTrue(yBefore < saab.getYCoord());
         saab.turnRight();
-        saab.move();
+        saab.gas(1);
         assertTrue(xBefore < saab.getXCoord());
     }
 

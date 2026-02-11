@@ -2,19 +2,20 @@ import java.awt.*;
 import java.util.Deque;
 import java.util.ArrayDeque;
 
-public class Biltransport extends Vehicles implements Movable {
-    protected boolean isRampDown;
-    private Deque<Vehicles> carsLoaded = new ArrayDeque<>();
-    private int maxCars = 4;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-
+public class Biltransport extends Truck implements Movable {
+    protected Deque<Vehicles> carsLoaded = new ArrayDeque<>();
+    private final int maxCars = 4;
+    private int retAng;
 
     public Biltransport() {
         nrDoors = 2;
         color = Color.PINK;
         enginePower = 500;
-        isRampDown = false;
-        modelName = "Scania";
+        isRampActive = false;
+        modelName = "Biltransport";
         stopEngine();
     }
 
@@ -24,61 +25,39 @@ public class Biltransport extends Vehicles implements Movable {
     }
 
     @Override
-    public void gas(double amount) {
-        if(isRampDown) {
-            System.out.println("Du kan inte köra medans rampen är nere!!");
-            return;
-        }
-
-        if (amount < 0.00 || amount > 1.00) {
-            throw new IllegalArgumentException("Värdet måste vara mellan 0.00 -> 1.00");
-        }
-        incrementSpeed(amount);
-        move();
-    }
-
-    // Samma kod som Scania. Men denna använder sig av boolean så vi kan inte lägga dessa metoder som
-    // en metod i supertypen "truck"
-
-    public void lowerRamp(boolean lower) {
-        if(!engineRunning) {
-            System.out.println("Motorn måste vara igång för att använda rampen!");
-            return;
-        }
-
-        if(currentSpeed != 0) {
-            System.out.println("Trucken måste stå still för att använda rampen");
-            return;
-        }
-
-        if(lower) {
-            isRampDown = true;
+    public void lowerRamp(double amount) {
+        if(amount >= 1) {
+            isRampActive = true;
         }
     }
 
-    public void raiseRamp(boolean raise) {
-        if(!engineRunning) {
-            System.out.println("Motorn måste vara igång för att använda rampen!");
-            return;
+    // Vi använder oss av doubles för att styra boolean status på våran ramp för
+    // Biltransport då denna är annorlunda från Scania
+    @Override
+    public void raiseRamp(double amount) {
+        if(amount >= 1) {
+            isRampActive = false;
+        }
+    }
+
+    @Override
+    public double getRampAngle() {
+        if(isRampActive) {
+           retAng = 1;
         }
 
-        if(currentSpeed != 0) {
-            System.out.println("Trucken måste stå still för att använda rampen");
-            return;
-        }
-
-        if(raise) {
-            isRampDown = false;
-        }
+        if(!isRampActive) {
+           retAng = 0;
+        } return retAng;
     }
 
     public void loadCar(Vehicles car) {
-        if(!isRampDown) {
+        if (!isRampActive) {
             System.out.println("Rampen är ej nere! Går ej att lasta bilar!");
             return;
         }
 
-        if(car instanceof Biltransport) {
+        if (car instanceof Biltransport) {
             System.out.println("Du kan inte lasta en biltransport på en biltransport!!!");
             return;
         }
@@ -95,7 +74,7 @@ public class Biltransport extends Vehicles implements Movable {
             return;
         }
 
-        if(carsLoaded.size() >= 5) {
+        if(carsLoaded.size() > 4) {
             System.out.println("Biltransporten är full!");
             return;
         }
@@ -106,7 +85,7 @@ public class Biltransport extends Vehicles implements Movable {
     }
 
     public Vehicles unloadCar() {
-        if(!isRampDown) {
+        if(!isRampActive) {
             System.out.println("Rampen är inte nere! Omöjligt att lasta av bilar!");
             return null;
         }
@@ -124,5 +103,21 @@ public class Biltransport extends Vehicles implements Movable {
 
         System.out.println("Bilen är nu lossad!");
         return car;
+    }
+    public static void main(String[] args) {
+        Biltransport biltransport = new Biltransport();
+
+        biltransport.startEngine();
+        // Sänker ner rampen så man kan lasta bilar.
+        biltransport.lowerRamp(1);
+        System.out.println(biltransport.isRampActive);
+
+        // Höjer den igen, borde fortfarande vara "1" för active.
+        biltransport.lowerRamp(1);
+        System.out.println(biltransport.isRampActive);
+
+        // Sänker man den med "1", så är det som att höja den hela vägen upp
+        // Alltså isRampActive = false;
+        biltransport.raiseRamp(1);
     }
 }

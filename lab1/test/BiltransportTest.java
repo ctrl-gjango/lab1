@@ -7,105 +7,126 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class BiltransportTest {
-    Vehicles transport = new Biltransport();
+    Truck transport = new Biltransport();
     /* Testar om alla värden instansieras rätt
      */
     @Test
     public void startingValues() {
-        assertEquals(2, scania.getNrDoors());
-        assertEquals(Color.PINK, scania.getColor());
-        assertEquals(300, scania.getEnginePower(), 0.10);
-        assertEquals("Scania", scania.getModelName());
+        assertEquals(2, transport.getNrDoors());
+        assertEquals(Color.PINK, transport.getColor());
+        assertEquals(500, transport.getEnginePower(), 0.10);
+        assertEquals("Biltransport", transport.getModelName());
     }
 
     /* Testar om rampen höjs/sänks
      */
     @Test
     public void rampTest() {
-        Scania scania = new Scania();
-
         // Startar motorn och höjer rampen som test
-        scania.startEngine();
-        scania.raiseRamp(50);
-        assertEquals(50, scania.getRampAngle(), 0.1);
+        transport.startEngine();
+        transport.lowerRamp(1);
+        assertTrue(transport.isRampActive);
 
-        // Vinkel får ej överstiga 70 grader när man höjer rampen
-        scania.raiseRamp(400);
-        assertEquals(70, scania.getRampAngle(), 0.1);
+        // Höjer den igen, borde fortfarande vara "1" för active.
+        transport.lowerRamp(1);
+        assertTrue(transport.isRampActive);
 
-        // Vinkel får ej understiga 0 grader när man sänker rampen
-        scania.lowerRamp(400);
-        assertEquals(0, scania.getRampAngle(), 0.1);
+        // Sänker man den med "0", så är det som att sänka den hela
+        // vägen ner. Alltså isRampActive = false;
+        transport.raiseRamp(1);
+        assertFalse(transport.isRampActive);
+    }
+
+    @Test
+    public void loadAndUnloadCarTest() {
+        Vehicles volvo = new Volvo240();
+        Biltransport transport = new Biltransport();
+
+        transport.startEngine();
+        transport.lowerRamp(1);
+        transport.loadCar(volvo);
+        assertEquals(1, transport.carsLoaded.size());
+
+        transport.unloadCar();
+        assertEquals(0, transport.carsLoaded.size());
+    }
+
+    @Test
+    public void loadTransTest() {
+        Truck transport1 = new Biltransport();
+        Biltransport transport2 = new Biltransport();
+
+        transport2.startEngine();
+        transport2.lowerRamp(1);
+        transport2.loadCar(transport1);
+        assertEquals(0, transport2.carsLoaded.size());
     }
 
     /* Testar ifall motorn startas
      */
     @Test
     public void engineTest() {
-        scania.startEngine();
-        assertTrue(scania.getEngineRunning());
+        transport.startEngine();
+        assertTrue(transport.getEngineRunning());
 
-        scania.stopEngine();
-        assertFalse(scania.getEngineRunning());
+        transport.stopEngine();
+        assertFalse(transport.getEngineRunning());
     }
 
     /* Testar om bilen rör på sig och uppdaterar x och y koordinater.
      */
     @Test
     public void moveTest() {
-        Scania scania = new Scania();
-        double xBefore = scania.getXCoord();
-        double yBefore = scania.getYCoord();
-        scania.startEngine();
-        scania.gas(1);
-        assertTrue(yBefore < scania.getYCoord());
-        scania.turnRight();
-        scania.move();
-        assertTrue(xBefore < scania.getXCoord());
+        double xBefore = transport.getXCoord();
+        double yBefore = transport.getYCoord();
+        transport.startEngine();
+        transport.gas(1);
+        assertTrue(yBefore < transport.getYCoord());
+        transport.turnRight();
+        transport.move();
+        assertTrue(xBefore < transport.getXCoord());
     }
 
     @Test
     public void turnLeftTest() {
-        Scania Scania = new Scania();
         int[] posList = new int[4];
-        String oldPos = scania.getPosition(scania.positions);
+        String oldPos = transport.getPosition(transport.positions);
 
-        Scania.startEngine();
+        transport.startEngine();
         for(int i = 0; i < posList.length; i++ ) {
-            assertEquals(oldPos, scania.getPosition(scania.positions));
-            Scania.turnLeft();
-            oldPos = scania.getPosition(scania.positions);
+            assertEquals(oldPos, transport.getPosition(transport.positions));
+            transport.turnLeft();
+            oldPos = transport.getPosition(transport.positions);
         }
     }
 
     @Test
     public void turnRightTest() {
-        Scania scania = new Scania();
         int[] posList = new int[4];
-        String oldPos = scania.getPosition(scania.positions);
+        String oldPos = transport.getPosition(transport.positions);
 
-        scania.startEngine();
+        transport.startEngine();
         for(int i = 0; i < posList.length; i++ ) {
-            assertEquals(oldPos, scania.getPosition(scania.positions));
-            scania.turnRight();
-            oldPos = scania.getPosition(scania.positions);
+            assertEquals(oldPos, transport.getPosition(transport.positions));
+            transport.turnRight();
+            oldPos = transport.getPosition(transport.positions);
         }
     }
 
     @Test
     public void speedTest() {
-        double oldSpeed = scania.getCurrentSpeed();
+        double oldSpeed = transport.getCurrentSpeed();
 
-        scania.incrementSpeed(50);
-        assertTrue(oldSpeed < scania.getCurrentSpeed());
+        transport.incrementSpeed(50);
+        assertTrue(oldSpeed < transport.getCurrentSpeed());
 
-        scania.decrementSpeed(1000);
-        assertEquals(0, scania.getCurrentSpeed(), 0.1);
+        transport.decrementSpeed(1000);
+        assertEquals(0, transport.getCurrentSpeed(), 0.1);
     }
 
     @Test
-    public void interFaceTest() {
-        Movable testCar = new Saab95();
+    public void interfaceTest() {
+        Movable testCar = new Biltransport();
         testCar.move();
         testCar.turnLeft();
 
@@ -114,37 +135,30 @@ public class BiltransportTest {
 
     @Test
     public void gasTest() {
-        Scania scania = new Scania();
-        double oldSpeed = scania.getCurrentSpeed();
+        double oldSpeed = transport.getCurrentSpeed();
 
-        scania.startEngine();
-        scania.gas(1.0);
-        assertTrue(oldSpeed < scania.getCurrentSpeed());
+        transport.startEngine();
+        transport.gas(1.0);
+        assertTrue(oldSpeed < transport.getCurrentSpeed());
     }
 
     @Test
     public void brakeTest() {
-        Scania scania = new Scania();
         double oldSpeed;
 
-        scania.startEngine();
-        scania.gas(1);
-        oldSpeed = scania.getCurrentSpeed();
-        scania.brake(0.5);
+        transport.startEngine();
+        transport.gas(1);
+        oldSpeed = transport.getCurrentSpeed();
+        transport.brake(0.5);
 
-        assertTrue(oldSpeed > scania.getCurrentSpeed());
+        assertTrue(oldSpeed > transport.getCurrentSpeed());
     }
 
     @Test
     public void speedLimitTest() {
-        Scania scania = new Scania();
-
-        scania.currentSpeed = 300;
-        scania.gas(1);
-        assertEquals(300, scania.getCurrentSpeed(), 0.001);
+        transport.currentSpeed = 500;
+        transport.gas(1);
+        assertEquals(500, transport.getCurrentSpeed(), 0.001);
     }
-}
-
-
 }
 

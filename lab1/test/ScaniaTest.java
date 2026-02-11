@@ -3,9 +3,13 @@ import org.junit.Test;
 import java.awt.*;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+
 
 public class ScaniaTest {
-    Vehicles scania = new Scania();
+    Truck scania = new Scania();
 
     /* Testar om alla värden instansieras rätt
      */
@@ -21,8 +25,6 @@ public class ScaniaTest {
      */
     @Test
     public void rampTest() {
-        Scania scania = new Scania();
-
         // Startar motorn och höjer rampen som test
         scania.startEngine();
         scania.raiseRamp(50);
@@ -59,27 +61,25 @@ public class ScaniaTest {
         scania.gas(1);
         assertTrue(yBefore < scania.getYCoord());
         scania.turnRight();
-        scania.move();
+        scania.gas(1);
         assertTrue(xBefore < scania.getXCoord());
     }
 
     @Test
     public void turnLeftTest() {
-        Scania Scania = new Scania();
         int[] posList = new int[4];
         String oldPos = scania.getPosition(scania.positions);
 
-        Scania.startEngine();
+        scania.startEngine();
         for(int i = 0; i < posList.length; i++ ) {
             assertEquals(oldPos, scania.getPosition(scania.positions));
-            Scania.turnLeft();
+            scania.turnLeft();
             oldPos = scania.getPosition(scania.positions);
         }
     }
 
     @Test
     public void turnRightTest() {
-        Scania scania = new Scania();
         int[] posList = new int[4];
         String oldPos = scania.getPosition(scania.positions);
 
@@ -103,8 +103,8 @@ public class ScaniaTest {
     }
 
     @Test
-    public void interFaceTest() {
-        Movable testCar = new Saab95();
+    public void interfaceTest() {
+        Movable testCar = new Scania();
         testCar.move();
         testCar.turnLeft();
 
@@ -113,7 +113,6 @@ public class ScaniaTest {
 
     @Test
     public void gasTest() {
-        Scania scania = new Scania();
         double oldSpeed = scania.getCurrentSpeed();
 
         scania.startEngine();
@@ -122,8 +121,17 @@ public class ScaniaTest {
     }
 
     @Test
+    public void rampAndGas() {
+        Truck scania = new Scania();
+        scania.startEngine();
+        scania.raiseRamp(50);
+
+        scania.gas(0.5);
+        assertEquals(0, scania.getCurrentSpeed(), 0.001);
+    }
+
+    @Test
     public void brakeTest() {
-        Scania scania = new Scania();
         double oldSpeed;
 
         scania.startEngine();
@@ -136,8 +144,6 @@ public class ScaniaTest {
 
     @Test
     public void speedLimitTest() {
-        Scania scania = new Scania();
-
         scania.currentSpeed = 300;
         scania.gas(1);
         assertEquals(300, scania.getCurrentSpeed(), 0.001);

@@ -2,8 +2,8 @@ import org.junit.Test;
 
 import java.awt.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
 
 public class Volvo240Test {
     Vehicles volvo = new Volvo240();
@@ -19,10 +19,11 @@ public class Volvo240Test {
     @Test
     public void engineTest() {
         volvo.startEngine();
-        assertTrue(volvo.getCurrentSpeed() > 0);
+        assertTrue(volvo.getEngineRunning());
 
         volvo.stopEngine();
         assertEquals(0, volvo.getCurrentSpeed(), 0.1);
+        assertFalse(volvo.getEngineRunning());
     }
 
     @Test
@@ -31,10 +32,10 @@ public class Volvo240Test {
         double xBefore = volvo.getXCoord();
         double yBefore = volvo.getYCoord();
         volvo.startEngine();
-        volvo.move();
+        volvo.gas(1);
         assertTrue(yBefore < volvo.getYCoord());
         volvo.turnRight();
-        volvo.move();
+        volvo.gas(1);
         assertTrue(xBefore < volvo.getXCoord());
     }
 
@@ -78,7 +79,7 @@ public class Volvo240Test {
     }
 
     @Test
-    public void interFaceTest() {
+    public void interfaceTest() {
         Movable testCar = new Saab95();
         testCar.move();
         testCar.turnLeft();
