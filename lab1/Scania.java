@@ -9,6 +9,8 @@ public class Scania extends Truck implements Movable {
         enginePower = 300;
         isRampActive = false;
         rampAngle = 0;
+        maxAng = 70;
+        minAng = 0;
         modelName = "Scania";
         stopEngine();
     }

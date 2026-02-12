@@ -2,9 +2,6 @@ import java.awt.*;
 import java.util.Deque;
 import java.util.ArrayDeque;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 public class Biltransport extends Truck implements Movable {
     protected Deque<Vehicles> carsLoaded = new ArrayDeque<>();
     private final int maxCars = 4;
@@ -24,6 +21,8 @@ public class Biltransport extends Truck implements Movable {
         return enginePower * 0.02;
     }
 
+    // Vi använder oss av doubles för att styra boolean status på våran ramp för
+    // Biltransport då denna är annorlunda från Scania
     @Override
     public void lowerRamp(double amount) {
         if(amount >= 1) {
@@ -31,8 +30,6 @@ public class Biltransport extends Truck implements Movable {
         }
     }
 
-    // Vi använder oss av doubles för att styra boolean status på våran ramp för
-    // Biltransport då denna är annorlunda från Scania
     @Override
     public void raiseRamp(double amount) {
         if(amount >= 1) {
@@ -52,13 +49,13 @@ public class Biltransport extends Truck implements Movable {
     }
 
     public void loadCar(Vehicles car) {
-        if (!isRampActive) {
+        if(!isRampActive) {
             System.out.println("Rampen är ej nere! Går ej att lasta bilar!");
             return;
         }
 
-        if (car instanceof Biltransport) {
-            System.out.println("Du kan inte lasta en biltransport på en biltransport!!!");
+        if (car instanceof Truck) {
+            System.out.println("Du kan inte lasta en truck på en biltransport!!!");
             return;
         }
 
@@ -74,7 +71,7 @@ public class Biltransport extends Truck implements Movable {
             return;
         }
 
-        if(carsLoaded.size() > 4) {
+        if(carsLoaded.size() >= 4) {
             System.out.println("Biltransporten är full!");
             return;
         }
@@ -97,27 +94,12 @@ public class Biltransport extends Truck implements Movable {
 
         // Tar ut det första bilen på stacken
         Vehicles car = carsLoaded.pop();
+
         // Lämnar car ett "rimligt" värde från biltransporten :)
         car.xCoord = this.xCoord + 1;
         car.yCoord = this.yCoord + 1;
 
         System.out.println("Bilen är nu lossad!");
         return car;
-    }
-    public static void main(String[] args) {
-        Biltransport biltransport = new Biltransport();
-
-        biltransport.startEngine();
-        // Sänker ner rampen så man kan lasta bilar.
-        biltransport.lowerRamp(1);
-        System.out.println(biltransport.isRampActive);
-
-        // Höjer den igen, borde fortfarande vara "1" för active.
-        biltransport.lowerRamp(1);
-        System.out.println(biltransport.isRampActive);
-
-        // Sänker man den med "1", så är det som att höja den hela vägen upp
-        // Alltså isRampActive = false;
-        biltransport.raiseRamp(1);
     }
 }

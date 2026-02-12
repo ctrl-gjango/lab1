@@ -20,7 +20,7 @@ public class WorkshopTest {
         generalWork.takeCar(scania);
         generalWork.takeCar(transport);
 
-        assertEquals(4, generalWork.cars.size());
+        assertEquals(4, generalWork.vehicles.size());
         assertEquals(volvo, generalWork.returnCar());
         assertEquals(saab, generalWork.returnCar());
     }

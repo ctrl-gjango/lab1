@@ -3,30 +3,28 @@ import java.util.List;
 
 public class Workshop<V extends Vehicles> {
     // Använder generella List<> då vi inte vill vara låsta till en Linked/ArrayList
-    protected List<V> cars;
-    private final int maxCars;
+    protected List<V> vehicles;
+    private final int maxVehicles;
 
     public Workshop(int maxCars) {
-        this.maxCars = maxCars;
-        this.cars = new ArrayList<>();
+        this.maxVehicles = maxCars;
+        this.vehicles = new ArrayList<>();
     }
 
     public void takeCar(V car) {
-        if(cars.size() > maxCars) {
+        if(vehicles.size() > maxVehicles) {
             System.out.println("Verkstaden är full!");
             return;
         }
         // Om verkstaden inte är full lägger vi till parametern i listan. För car är utav typen Vehicles.
-        cars.add(car);
+        vehicles.add(car);
         System.out.println("Bilen: " + car.getModelName() + ", är nu i verkstaden.");
     }
 
     public V returnCar() {
-        if(cars.isEmpty()) {
+        if(vehicles.isEmpty()) {
             return null;
         }
-        return (cars.removeFirst());
+        return (vehicles.removeFirst());
     }
-
-
 }

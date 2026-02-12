@@ -1,6 +1,8 @@
 public abstract class Truck extends Vehicles {
     protected boolean isRampActive;
     protected double rampAngle;
+    protected double maxAng;
+    protected double minAng;
 
     public void gas(double amount) {
         if(isRampActive) {
@@ -31,8 +33,8 @@ public abstract class Truck extends Vehicles {
 
         rampAngle -= amount;
 
-        if(rampAngle <= 0) {
-            rampAngle = 0;
+        if(rampAngle <= minAng) {
+            rampAngle = minAng;
             isRampActive = false;
         }
     }
@@ -50,8 +52,8 @@ public abstract class Truck extends Vehicles {
 
         rampAngle += amount;
         isRampActive = true;
-        if(rampAngle > 70) {
-            rampAngle = 70;
+        if(rampAngle > maxAng ) {
+            rampAngle = maxAng;
         }
     }
 
